@@ -1,0 +1,29 @@
+library(tidyverse)
+library(collostructions)
+
+# read data ---------------------------------------------------------------
+
+zentrum <- read_delim("im_zentrum_zeit.txt", delim = "\t", quote = "", col_names = c("Freq", "word"))
+mitte <- read_delim("in_der_Mitte_zeit.txt", delim = "\t", quote = "", col_names = c("Freq", "word"))
+herzen <- read_delim("im_herzen_zeit.txt", delim = "\t", quote = "", col_names = c("Freq", "word"))
+
+
+
+# sum up zentrum + Mitte --------------------------------------------------
+
+zm <- rbind(zentrum, mitte) %>% group_by(word) %>% summarise(
+  Freq_zm = sum(Freq)
+)
+
+
+
+
+# prepare input for distinctive collexme analysis -------------------------
+
+collex_input <- left_join(zm, herzen, all = T)
+collex_input <- replace_na(collex_input, list(Freq = 0))
+
+# collostructional analysis -----------------------------------------------
+
+collex_input %>% as.data.frame %>% collex.dist(reverse = T) %>% head(20) # attracted to "Herzen"
+collex_input %>% as.data.frame %>% collex.dist(reverse = F) %>% head(20) # attracted to "ZENTRUM/MITTE"

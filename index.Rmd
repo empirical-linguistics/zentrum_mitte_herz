@@ -1,0 +1,114 @@
+---
+title: "Im Herzen der Korpuslinguistik"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Im Herzen der Korpuslinguistik: Eine Beispielanalyse
+
+Diese Beispielanalyse basiert auf Stefanowitsch (2005), der die engl. Varianten *in the heart of* und *in the centre of* untersucht und aufgrund einer distinktiven Kollexemanalyse (Gries & Stefanowitsch 2004) zu dem Schluss kommt, dass die metaphorische Variante tendenziell für komplexere Konzepte verwendet wird. Im Folgenden wollen wir überprüfen, ob sich eine ähnliche Tendenz auch im Deutschen zeigt. Dafür verwenden wir das ZEIT-Korpus, das über <a href="https://www.dwds.de/" target="_blank">dwds.de</a> verfügbar ist. Wir werden allerdings das Interface <a href="https://kaskade.dwds.de/dstar/" target="_blank">Dstar</a> verwenden, das komplexere Suchanfragen ermöglicht.Einen guten Einstieg in Dstar bietet <a href="http://sprachwissenschaft.fau.de/personen/daten/blombach/korpora.pdf" target="_blank">dieses Tutorial</a> von Andreas Blombach (Erlangen). <a href="https://sprache.hypotheses.org/723" target="_blank">Dieser Blogbeitrag</a> von Frank Wiegand bietet weitere hilfreiche Informationen.
+
+
+### Suche in Dstar
+
+Im Dstar-Interface klicken wir neben "zeit" auf den kleinen "www"-Button und gelangen zum Suchinterface. Wir verwenden folgende Suchanfragen, um die Varianten *im Zentrum von, im Herzen von, in der Mitte von* jeweils mit den genitivischen Varianten zu finden und nach dem Lemma eines Substantivs auszuzählen, das im Abstand von nicht mehr als 3 Wörtern von der Präposition bzw. dem Artikel stehen darf.
+
+
+```
+
+count( "@im @Zentrum $w=/des|der|von/g #3 $p=/N./g=1 " ) #by[$l=1] #DESC_COUNT
+count( "@im @Herzen $w=/des|der|von/g #3 $p=/N./g=1 " ) #by[$l=1] #DESC_COUNT
+count( "@in @der @Mitte $w=/des|der|von/g #3 $p=/N./g=1 " ) #by[$l=1] #DESC_COUNT
+
+
+```
+
+Um die Ergebnisse als Textdateien zu bekommen, wählen wir als Format "Text" aus, und um alle Ergebnisse zu bekommen, tragen wir bei "Page Size" eine deutlich höhere Zahl ein (in diesem Fall sind wir mit 10000 auf jeden Fall auf der sicheren Seite).
+
+
+
+### Datenanalyse in R
+
+Wir benutzen zur Datenanalyse R (vgl. zum Schnelleinstieg in R <a href="https://github.com/hartmast/sprachgeschichte/blob/master/begleitmaterial/07-Schnelleinstieg%20in%20R.pdf" target="_blank">dieses Tutorial</a>). In R verwenden wir die Pakete `tidyverse` (eigentlich eine ganze Sammlung von Paketen) und `collostructions`. Wenn Sie Ersteres noch nicht installiert haben, können Sie das ganz einfach mit folgendem Befehl installieren:
+
+
+```{r pkg, eval=FALSE, results = 'hide'}
+install.packages("tidyverse")
+```
+
+Das Paket "collostructions" gibt es nicht im "Comprehensive R Architecture Network" (CRAN) und kann deshalb nicht einfach mit `install.packages()` installiert werden. Folgen Sie den Anweisungen <a href="https://sfla.ch/collostructions/" target="_blank">hier</a>, um es zu installieren.
+
+Danach können wir beide Pakete laden:
+
+```{r loadpks, results = "hide", message = FALSE}
+
+library(tidyverse)
+library(collostructions)
+
+```
+
+
+Nun lesen wir die Daten ein. Sie finden die Dateien im Github-Repository, falls Sie sie nicht selbst über Dstar heruntergeladen haben. Ggf. müssen Sie die Dateinamen/-pfade anpassen.
+
+```{r readdata, results = "hide", message = FALSE}
+
+zentrum <- read_delim("im_zentrum_zeit.txt", delim = "\t", quote = "", col_names = c("Freq", "word"))
+mitte <- read_delim("in_der_Mitte_zeit.txt", delim = "\t", quote = "", col_names = c("Freq", "word"))
+herzen <- read_delim("im_herzen_zeit.txt", delim = "\t", quote = "", col_names = c("Freq", "word"))
+
+```
+
+
+Der Unterschied zwischen "Zentrum" und "Mitte" interessiert uns eigentlich nicht, beide sind nicht-metaphorisch. Deshalb summieren wir sie mit der praktischen summarise-Funktion aus dem Tidyverse auf.
+
+
+```{r summarise}
+
+zm <- rbind(zentrum, mitte) %>% group_by(word) %>% summarise(
+  Freq_zm = sum(Freq)
+)
+
+head(zm)
+
+```
+
+
+Nun bereiten wir den Input für die distinktive Kollexemanalyse vor. Dieser muss so aussehen, dass in der ersten Spalte das Lexem steht und in der zweiten und dritten Spalte die Frequenz des Lexems in den Konstruktionen, die man vergleicht (hier: *im Zentrum/der Mitte* einerseits und *im Herzen* andererseits). Weil viele Lexeme mit nur einer der beiden Varianten vorkommen, müssen wir zudem noch die NAs durch 0 ersetzen, und zwar mit der praktischen Tidyverse-Funktion `replace_na`.
+
+```{r join}
+
+collex_input <- left_join(zm, herzen, all = T)
+collex_input <- replace_na(collex_input, list(Freq = 0))
+
+```
+
+
+Jetzt können wir die Kollexemanalyse durchführen. Zuerst die Lexeme, die überzufällig häufig mit "im Herzen" auftreten:
+
+```{r herzen}
+
+collex_input %>% as.data.frame %>% collex.dist(reverse = T) %>% head(20) # attracted to "Herzen"
+
+```
+
+
+Und die Lexeme, die überzufällig häufig mit "in der Mitte" oder "im Zentrum" auftreten:
+
+
+```{r zentrum}
+
+collex_input %>% as.data.frame %>% collex.dist(reverse = F) %>% head(20) # attracted to "ZENTRUM/MITTE"
+
+```
+
+
+
+## Literatur
+
+- Gries, Stefan Th. & Anatol Stefanowitsch. 2004. Extending Collostructional Analysis: A Corpus-Based Perspective on “Alternations.” International Journal of Corpus Linguistics 9(1). 97–129.
+
+- Stefanowitsch, Anatol. 2005. The function of metaphor: Developing a corpus-based perspective. International Journal of Corpus Linguistics 10(2). 161–198.
+

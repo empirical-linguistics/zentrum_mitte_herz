@@ -7,7 +7,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Im Herzen der Korpuslinguistik: Eine Beispielanalyse
+## Eine Beispielanalyse
 
 Diese Beispielanalyse basiert auf Stefanowitsch (2005), der die engl. Varianten *in the heart of* und *in the centre of* untersucht und aufgrund einer distinktiven Kollexemanalyse (Gries & Stefanowitsch 2004) zu dem Schluss kommt, dass die metaphorische Variante tendenziell für komplexere Konzepte verwendet wird. Im Folgenden wollen wir überprüfen, ob sich eine ähnliche Tendenz auch im Deutschen zeigt. Dafür verwenden wir das ZEIT-Korpus, das über <a href="https://www.dwds.de/" target="_blank">dwds.de</a> verfügbar ist. Wir werden allerdings das Interface <a href="https://kaskade.dwds.de/dstar/" target="_blank">Dstar</a> verwenden, das komplexere Suchanfragen ermöglicht.Einen guten Einstieg in Dstar bietet <a href="http://sprachwissenschaft.fau.de/personen/daten/blombach/korpora.pdf" target="_blank">dieses Tutorial</a> von Andreas Blombach (Erlangen). <a href="https://sprache.hypotheses.org/723" target="_blank">Dieser Blogbeitrag</a> von Frank Wiegand bietet weitere hilfreiche Informationen.
 
@@ -51,7 +51,7 @@ library(collostructions)
 ```
 
 
-Nun lesen wir die Daten ein. Sie finden die Dateien im Github-Repository, falls Sie sie nicht selbst über Dstar heruntergeladen haben. Ggf. müssen Sie die Dateinamen/-pfade anpassen.
+Nun lesen wir die Daten ein. Sie finden die Dateien im <a href="https://github.com/empirical-linguistics/zentrum_mitte_herz" target="_blank">Github-Repository</a>, falls Sie sie nicht selbst über Dstar heruntergeladen haben. Ggf. müssen Sie die Dateinamen/-pfade anpassen.
 
 ```{r readdata, results = "hide", message = FALSE}
 

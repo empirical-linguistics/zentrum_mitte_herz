@@ -193,8 +193,8 @@ $(document).ready(function () {
 </div>
 
 
-<div id="im-herzen-der-korpuslinguistik-eine-beispielanalyse" class="section level2">
-<h2>Im Herzen der Korpuslinguistik: Eine Beispielanalyse</h2>
+<div id="eine-beispielanalyse" class="section level2">
+<h2>Eine Beispielanalyse</h2>
 <p>Diese Beispielanalyse basiert auf Stefanowitsch (2005), der die engl. Varianten <em>in the heart of</em> und <em>in the centre of</em> untersucht und aufgrund einer distinktiven Kollexemanalyse (Gries &amp; Stefanowitsch 2004) zu dem Schluss kommt, dass die metaphorische Variante tendenziell für komplexere Konzepte verwendet wird. Im Folgenden wollen wir überprüfen, ob sich eine ähnliche Tendenz auch im Deutschen zeigt. Dafür verwenden wir das ZEIT-Korpus, das über <a href="https://www.dwds.de/" target="_blank">dwds.de</a> verfügbar ist. Wir werden allerdings das Interface <a href="https://kaskade.dwds.de/dstar/" target="_blank">Dstar</a> verwenden, das komplexere Suchanfragen ermöglicht.Einen guten Einstieg in Dstar bietet <a href="http://sprachwissenschaft.fau.de/personen/daten/blombach/korpora.pdf" target="_blank">dieses Tutorial</a> von Andreas Blombach (Erlangen). <a href="https://sprache.hypotheses.org/723" target="_blank">Dieser Blogbeitrag</a> von Frank Wiegand bietet weitere hilfreiche Informationen.</p>
 <div id="suche-in-dstar" class="section level3">
 <h3>Suche in Dstar</h3>
@@ -215,7 +215,7 @@ count( &quot;@in @der @Mitte $w=/des|der|von/g #3 $p=/N./g=1 &quot; ) #by[$l=1] 
 <p>Danach können wir beide Pakete laden:</p>
 <pre class="r"><code>library(tidyverse)
 library(collostructions)</code></pre>
-<p>Nun lesen wir die Daten ein. Sie finden die Dateien im Github-Repository, falls Sie sie nicht selbst über Dstar heruntergeladen haben. Ggf. müssen Sie die Dateinamen/-pfade anpassen.</p>
+<p>Nun lesen wir die Daten ein. Sie finden die Dateien im <a href="https://github.com/empirical-linguistics/zentrum_mitte_herz" target="_blank">Github-Repository</a>, falls Sie sie nicht selbst über Dstar heruntergeladen haben. Ggf. müssen Sie die Dateinamen/-pfade anpassen.</p>
 <pre class="r"><code>zentrum &lt;- read_delim(&quot;im_zentrum_zeit.txt&quot;, delim = &quot;\t&quot;, quote = &quot;&quot;, col_names = c(&quot;Freq&quot;, &quot;word&quot;))
 mitte &lt;- read_delim(&quot;in_der_Mitte_zeit.txt&quot;, delim = &quot;\t&quot;, quote = &quot;&quot;, col_names = c(&quot;Freq&quot;, &quot;word&quot;))
 herzen &lt;- read_delim(&quot;im_herzen_zeit.txt&quot;, delim = &quot;\t&quot;, quote = &quot;&quot;, col_names = c(&quot;Freq&quot;, &quot;word&quot;))</code></pre>
